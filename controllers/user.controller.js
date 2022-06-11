@@ -5,6 +5,10 @@ module.exports = {
     createUser: (req, res) => {
         //req.body
         const user = new User(req.body);
+
+        if(req.file){
+            user.image = req.file.filename;
+        }
         user.save((error, doc) => {
             if (error) {
                 return res.status(400).json({ error })

@@ -20,12 +20,36 @@ const userSchema = mongoose.Schema(
         dateInscription: {
             type: Date,
             default: new Date()
+        },
+        image: {
+            type: String
         }
     },
     {
-        timestamps: true // add two key createAt and updatedAt
+        timestamps: true // add two keys createAt and updatedAt
     }
 );
+
+userSchema.pre('save', function (next) {
+    const user = this;
+    console.log('applied');
+    user.firstName = user.firstName + " applied via pre function"
+    next();
+});
+
+
+userSchema.options.toJSON = {
+    transform: function(doc, object, options) {
+        object.id = object._id;
+        delete object.__v;
+        delete object._id;
+        delete object.createdAt;
+        delete object.updatedAt;
+        return object;
+    }
+};
+
+
 
 // const example = {
 //     firstName: "John",
