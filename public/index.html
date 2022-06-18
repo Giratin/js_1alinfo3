@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <ul id="messages">
+
+    </ul>
+    <input type="text" placeholder="Type something ..." id="text_input">
+    <button onclick="sendData()">send</button>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect("http://localhost:3000");
+        socket.on('connected', data => {
+            $('#messages').empty();
+            data.forEach((el)=>{
+                $('#messages').append(`
+                    <li> ${el.sender_id}:  ${el.message} @ ${el.createdAt} </li>
+                `)
+            })
+        });
+
+        socket.on('messages', data =>{
+            $('#messages').empty();
+            console.log($('#messages').innerHTML);
+            data.forEach((el)=>{
+                $('#messages').append(`
+                    <li> ${el.sender_id}:  ${el.message} @ ${el.createdAt} </li>
+                `)
+            })
+        })
+
+        const sendData = () => {
+            var text =document.getElementById('text_input').value;
+            console.log({ client: socket.id, message: text });
+            socket.emit('onMessage', { client: socket.id, message: text });
+            document.getElementById('text_input').value = "";
+        }
+    </script>
+</body>
+</html>
