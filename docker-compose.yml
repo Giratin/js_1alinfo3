@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  backend_test:
+    # image: tryvl/express_mongo_1_alinfo_3:v1
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3005:3000"
+    depends_on:
+      - db_mongo
+
+  db_mongo:
+    image: mongo:5
+    ports:
+      - "27018:27017"
+    volumes:
+      - database:/data/db
+
+volumes:
+  database:
